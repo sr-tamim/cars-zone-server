@@ -9,7 +9,7 @@ const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-app.get('/', (req, res) => res.send(`Cars Zone server is ready.! port ${port}`));
+app.get('/', (req, res) => res.send(`Cars Zone server is ready at port ${port}`));
 
 
 const user = process.env.DB_USER;  // mongoDB user
