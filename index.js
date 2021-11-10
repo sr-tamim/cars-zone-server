@@ -24,8 +24,13 @@ async function run() {
         // connect mongoDB client
         await client.connect();
 
-        // users info collection
+        // cars info collection
         const carsCollection = client.db('carsCollection').collection('cars');
+
+
+        // users info collection
+        const usersCollection = client.db('usersCollection').collection('users');
+
 
         // get cars info from database
         app.get('/cars/:dataAmount', async (req, res) => {
@@ -35,6 +40,25 @@ async function run() {
             res.json(dataAmount === 'all' ? cars :
                 cars.slice(0, dataAmount));
         })
+
+
+        // save user info in database
+        app.post('/users', async (req, res) => {
+            const newUser = req.body
+            const query = { email: newUser.email }
+            const filter = await usersCollection.findOne(query)
+            if (filter) {
+                const updateDoc = { $set: { ...newUser } }
+                const options = { upsert: true }
+                const result = await usersCollection.updateOne(query, updateDoc, options)
+                console.log(result)
+                res.json(result)
+            }
+            else {
+                res.json({ error: "User not found" })
+            }
+        })
+
 
     } finally {
         // await client.close();
