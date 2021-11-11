@@ -27,6 +27,8 @@ async function run() {
         // cars info collection
         const carsCollection = client.db('carsCollection').collection('cars');
 
+        // orders info collection
+        const ordersCollection = client.db('ordersCollection').collection('orders');
 
         // users info collection
         const usersCollection = client.db('usersCollection').collection('users');
@@ -39,6 +41,24 @@ async function run() {
             const cars = await cursor.toArray();
             res.json(dataAmount === 'all' ? cars :
                 cars.slice(0, dataAmount));
+        })
+        // get single car details by id
+        app.get('/cars/details/:carID', async (req, res) => {
+            const id = req.params.carID;
+            const query = { carID: parseInt(id) }
+            const result = await carsCollection.findOne(query);
+            res.json(result)
+        })
+
+
+        // save order info in database
+        app.post('/order/save', async (req, res) => {
+            const orderInfo = req.body
+            const query = { carID: orderInfo.carID }
+            const updateDoc = { $set: { ...orderInfo } }
+            const options = { upsert: true }
+            const result = await ordersCollection.updateOne(query, updateDoc, options)
+            res.json(result)
         })
 
 
