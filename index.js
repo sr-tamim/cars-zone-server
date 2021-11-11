@@ -61,6 +61,14 @@ async function run() {
             res.json(result)
         })
 
+        // get orders by email
+        app.get('/orders/:email', async (req, res) => {
+            const { email } = req.params;
+            const filter = { email: email };
+            const result = await ordersCollection.find(filter).toArray();
+            res.json(result);
+        })
+
 
         // save user info in database
         app.post('/users', async (req, res) => {
