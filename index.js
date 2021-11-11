@@ -54,10 +54,7 @@ async function run() {
         // save order info in database
         app.post('/order/save', async (req, res) => {
             const orderInfo = req.body
-            const query = { carID: orderInfo.carID }
-            const updateDoc = { $set: { ...orderInfo } }
-            const options = { upsert: true }
-            const result = await ordersCollection.updateOne(query, updateDoc, options)
+            const result = await ordersCollection.insertOne(orderInfo)
             res.json(result)
         })
 
