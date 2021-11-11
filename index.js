@@ -33,6 +33,9 @@ async function run() {
         // users info collection
         const usersCollection = client.db('usersCollection').collection('users');
 
+        // reviews collection
+        const reviewCollection = client.db('reviewCollection').collection('reviews');
+
 
         // get cars info from database
         app.get('/cars/:dataAmount', async (req, res) => {
@@ -88,6 +91,13 @@ async function run() {
             else {
                 res.json({ error: "User not found" })
             }
+        })
+
+        // add review
+        app.post('/review', async (req, res) => {
+            const review = req.body
+            const result = await reviewCollection.insertOne(review)
+            res.json(result)
         })
 
 
