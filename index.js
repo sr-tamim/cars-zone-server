@@ -67,11 +67,25 @@ async function run() {
             const result = await ordersCollection.deleteOne(query);
             res.json(result);
         })
-        // get orders by email
+
+        // update status of any order
+        app.put('/order', async (req, res) => {
+            const { id, status } = req.body;
+            const query = { _id: ObjectId(id) }
+            const updateDoc = { $set: { status } }
+            const options = { upsert: false }
+            const result = await ordersCollection.updateOne(query, updateDoc, options)
+            res.json(result)
+        })
+
+        // get orders
         app.get('/orders/:email', async (req, res) => {
             const { email } = req.params;
-            const filter = { email: email };
-            const result = await ordersCollection.find(filter).toArray();
+            const query = { email: email };
+            const userInfo = await usersCollection.findOne(query);
+            const orders = userInfo.role === 'admin' ? ordersCollection.find({})
+                : ordersCollection.find(query)
+            const result = await orders.toArray();
             res.json(result);
         })
 
