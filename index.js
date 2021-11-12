@@ -52,6 +52,20 @@ async function run() {
             const result = await carsCollection.findOne(query);
             res.json(result)
         })
+        // add new car info to database
+        app.post('/cars', async (req, res) => {
+            const carID = (await carsCollection.find({}).toArray()).length + 1
+            const newCar = { ...req.body, carID }
+            const result = await carsCollection.insertOne(newCar)
+            res.json(result)
+        })
+        // delete a car info from database
+        app.delete('/cars/:carID', async (req, res) => {
+            const { carID } = req.params
+            const filter = { carID: parseInt(carID) }
+            const result = await carsCollection.deleteOne(filter)
+            res.json(result)
+        })
 
 
         // save order info in database
