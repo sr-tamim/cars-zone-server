@@ -81,11 +81,29 @@ async function run() {
             const newUser = req.body
             const query = { email: newUser.email }
             const filter = await usersCollection.findOne(query)
+            const updateDoc = { $set: { ...newUser, role: filter?.role || 'public' } }
+            const options = { upsert: true }
+            const result = await usersCollection.updateOne(query, updateDoc, options)
+            res.json(result)
+        })
+
+        // get user info from database
+        app.get('/users/:email', async (req, res) => {
+            const { email } = req.params
+            const query = { email: email }
+            const filter = await usersCollection.findOne(query)
+            res.json(filter)
+        })
+
+        // make admin
+        app.post('/admin/add', async (req, res) => {
+            const { email } = req.body
+            const query = { email }
+            const filter = await usersCollection.findOne(query)
             if (filter) {
-                const updateDoc = { $set: { ...newUser } }
+                const updateDoc = { $set: { role: 'admin' } }
                 const options = { upsert: true }
                 const result = await usersCollection.updateOne(query, updateDoc, options)
-                console.log(result)
                 res.json(result)
             }
             else {
