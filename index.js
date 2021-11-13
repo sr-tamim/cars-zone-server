@@ -54,8 +54,9 @@ async function run() {
         })
         // add new car info to database
         app.post('/cars', async (req, res) => {
-            const carID = (await carsCollection.find({}).toArray()).length + 1
-            const newCar = { ...req.body, carID }
+            const carIDs = (await carsCollection.find({}).toArray()).map(info => info.carID)
+            const newCarID = Math.max(carIDs) + 1
+            const newCar = { ...req.body, carID: newCarID }
             const result = await carsCollection.insertOne(newCar)
             res.json(result)
         })
