@@ -36,6 +36,9 @@ async function run() {
         // reviews collection
         const reviewCollection = client.db('reviewCollection').collection('reviews');
 
+        // messages collection
+        const messagesCollection = client.db('messagesCollection').collection('messages');
+
 
         // get cars info from database
         app.get('/cars/:dataAmount', async (req, res) => {
@@ -155,6 +158,20 @@ async function run() {
                 }
             })
             res.json(reviews)
+        })
+
+
+        // messages
+        app.post('/contact', async (req, res) => {
+            const messageInfo = req.body
+            console.log(messageInfo)
+            const result = await messagesCollection.insertOne(messageInfo)
+            res.json(result)
+        })
+        // get all messages
+        app.get('/contact', async (req, res) => {
+            const result = await messagesCollection.find({}).toArray()
+            res.json(result)
         })
 
 
