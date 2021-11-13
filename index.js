@@ -6,6 +6,7 @@ require('dotenv').config();
 const cors = require('cors');
 const port = process.env.PORT || 5000;
 
+// middlewares
 app.use(cors());
 app.use(express.json());
 
@@ -36,7 +37,7 @@ async function run() {
         // reviews collection
         const reviewCollection = client.db('reviewCollection').collection('reviews');
 
-        // messages collection
+        // contact messages collection
         const messagesCollection = client.db('messagesCollection').collection('messages');
 
 
@@ -131,6 +132,7 @@ async function run() {
         app.post('/admin/add', async (req, res) => {
             const { email } = req.body
             const query = { email }
+            // finding if there is any account with this email or not
             const filter = await usersCollection.findOne(query)
             if (filter) {
                 const updateDoc = { $set: { role: 'admin' } }
@@ -161,10 +163,9 @@ async function run() {
         })
 
 
-        // messages
+        // add contact messages
         app.post('/contact', async (req, res) => {
             const messageInfo = req.body
-            console.log(messageInfo)
             const result = await messagesCollection.insertOne(messageInfo)
             res.json(result)
         })
