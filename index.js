@@ -148,7 +148,12 @@ async function run() {
         })
         // get all review
         app.get('/review', async (req, res) => {
-            const reviews = await reviewCollection.find({}).toArray()
+            const result = await reviewCollection.find({}).toArray()
+            const reviews = result.map(review => {
+                return {
+                    _id: review._id, reviewBy: review.displayName, review: review.review, rating: review.rating
+                }
+            })
             res.json(reviews)
         })
 
