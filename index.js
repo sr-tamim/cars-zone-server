@@ -139,7 +139,7 @@ async function run() {
                 res.json(result)
             }
             else {
-                res.json({ error: "User not found" })
+                res.json({ error: "No Account Found With This Email" })
             }
         })
 
